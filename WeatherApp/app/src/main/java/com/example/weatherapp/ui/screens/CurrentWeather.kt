@@ -8,13 +8,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import com.example.weatherapp.MainViewModel
 import com.example.weatherapp.R
 
 @Composable
-fun CurrentWeather() {
+fun CurrentWeather(mainViewModel: MainViewModel) {
+
+    val weather = mainViewModel.weather.collectAsState().value
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -23,20 +28,23 @@ fun CurrentWeather() {
             .verticalScroll(state = rememberScrollState()))  {
 
         // Weather image
-        Image(
-            painter = painterResource(id = R.drawable.weather_icon),
-            contentDescription = "Weather Icon")
+        if (weather != null) {
+            Image(
+                painter = painterResource(id = ("${weather.current.weatherIcon}").toInt()),
+                contentDescription = "Weather Icon")
 
-        //Temp
-        Text("72°F")
+            Text(text = weather.current.condition)
 
-        //Condition
-        Text("Sunny")
+            Text(text = "${weather.current.temperature}°C")
 
-        //Precipitation
-        Text("Precipitation: 0%")
+            Text(text = "Precipitation: ${weather.current.precipitationType}," +
+                    " ${weather.current.precipitationAmount}mm")
 
-        //Wind speed and direction
-        Text("Wind: 5 mph East")
+            Text(text = "Wind: ${weather.current.windDirection}," +
+                    " ${weather.current.windSpeed}km/h")
+        }
+        else {
+            Text(text = "Weather not found")
+        }
     }
 }

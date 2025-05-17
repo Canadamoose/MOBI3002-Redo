@@ -6,71 +6,54 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.weatherapp.MainViewModel
 import com.example.weatherapp.R
 
 @Composable
-fun DailyForecast() {
+fun DailyForecast(mainViewModel: MainViewModel) {
+
+    val weather = mainViewModel.weather.collectAsState().value
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 25.dp)
             .verticalScroll(state = rememberScrollState())) {
 
-        //Date
-        Text("Tomorrow")
-        // Weather image
-        Image(
-            painter = painterResource(id = R.drawable.weather_icon),
-            contentDescription = "Weather Icon"
-        )
-        //Temp
-        Text("72°F")
-        //Condition
-        Text("Sunny")
-        //Precipitation
-        Text("Precipitation: 0%")
-        //Wind speed and direction
-        Text("Wind: 5 mph East")
 
-        //2nd day
-        Spacer(Modifier.height(50.dp))
-        //Date
-        Text("The next Day")
-        // Weather image
-        Image(
-            painter = painterResource(id = R.drawable.weather_icon),
-            contentDescription = "Weather Icon"
-        )
-        //Temp
-        Text("72°F")
-        //Condition
-        Text("Sunny")
-        //Precipitation
-        Text("Precipitation: 0%")
-        //Wind speed and direction
-        Text("Wind: 5 mph East")
+        if (weather != null) {
+            weather.forecast.forEach { forecast ->
 
-        //3rd day
-        Spacer(Modifier.height(50.dp))
-        //Date
-        Text("The other next day")
-        // Weather image
-        Image(
-            painter = painterResource(id = R.drawable.weather_icon),
-            contentDescription = "Weather Icon"
-        )
-        //Temp
-        Text("72°F")
-        //Condition
-        Text("Sunny")
-        //Precipitation
-        Text("Precipitation: 0%")
-        //Wind speed and direction
-        Text("Wind: 5 mph East")
 
+                Text(text = forecast.date)
+
+                Image(
+                    painter = painterResource(id = ("${forecast.weatherIcon}").toInt()),
+                    contentDescription = "Weather Icon"
+                )
+
+                Text(text = "High: ${forecast.maxTemp}°C, Low: ${forecast.minTemp}°C")
+
+                Text(text = forecast.condition)
+
+                if (forecast.precipitationAmount != 0.0){
+                    Text(text = "Precipitation: ${forecast.precipitationType}," +
+                            " ${forecast.precipitationAmount}mm," +
+                            " ${forecast.precipitationProbability}%")
+                }
+
+                Text(text = "Wind: ${forecast.windDirection}," +
+                        " ${forecast.windSpeed}km/h")
+
+                Text(text = "Humidity: ${forecast.humidity}%")
+
+                //Give space
+                Spacer(Modifier.height(50.dp))
+            }
+        }
     }
 }
