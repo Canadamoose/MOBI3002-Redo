@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -12,8 +13,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.weatherapp.MainViewModel
-import com.example.weatherapp.R
+import com.example.weatherapp.models.Weather
 
 @Composable
 fun CurrentWeather(mainViewModel: MainViewModel) {
@@ -29,19 +33,22 @@ fun CurrentWeather(mainViewModel: MainViewModel) {
 
         // Weather image
         if (weather != null) {
-            Image(
-                painter = painterResource(id = ("${weather.current.weatherIcon}").toInt()),
-                contentDescription = "Weather Icon")
+            AsyncImage(
+                model = "https:${weather.current.condition.icon}",
+                contentDescription = weather.current.condition.text
+            )
 
-            Text(text = weather.current.condition)
+            //condition
+            Text(text = weather.current.condition.text)
 
-            Text(text = "${weather.current.temperature}°C")
+            //current temp
+            Text(text = "${weather.current.temp_c}°C")
 
-            Text(text = "Precipitation: ${weather.current.precipitationType}," +
-                    " ${weather.current.precipitationAmount}mm")
+            //precipitation
+            Text(text = "Precipitation: ${weather.current.precip_mm}mm")
 
-            Text(text = "Wind: ${weather.current.windDirection}," +
-                    " ${weather.current.windSpeed}km/h")
+            Text(text = "Wind: ${weather.current.wind_dir}," +
+                    " ${weather.current.wind_kph}km/h")
         }
         else {
             Text(text = "Weather not found")

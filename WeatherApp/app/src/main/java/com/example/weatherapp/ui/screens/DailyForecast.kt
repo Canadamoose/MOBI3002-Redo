@@ -8,10 +8,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.*
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.weatherapp.MainViewModel
-import com.example.weatherapp.R
 
 @Composable
 fun DailyForecast(mainViewModel: MainViewModel) {
@@ -26,34 +26,39 @@ fun DailyForecast(mainViewModel: MainViewModel) {
 
 
         if (weather != null) {
-            weather.forecast.forEach { forecast ->
+            weather.forecast.forecastday.forEach { forecast ->
 
-
+                //date
                 Text(text = forecast.date)
 
-                Image(
-                    painter = painterResource(id = ("${forecast.weatherIcon}").toInt()),
-                    contentDescription = "Weather Icon"
+                //Weather image
+                AsyncImage(
+                    model = "https:${forecast.day.condition.icon}",
+                    contentDescription = forecast.day.condition.text
                 )
 
-                Text(text = "High: ${forecast.maxTemp}°C, Low: ${forecast.minTemp}°C")
 
-                Text(text = forecast.condition)
+                Text(text = "High: ${forecast.day.maxtemp_c}°C, Low: ${forecast.day.mintemp_c}°C")
 
-                if (forecast.precipitationAmount != 0.0){
-                    Text(text = "Precipitation: ${forecast.precipitationType}," +
-                            " ${forecast.precipitationAmount}mm," +
-                            " ${forecast.precipitationProbability}%")
-                }
+                //condition
+                Text(text = forecast.day.condition.text)
 
-                Text(text = "Wind: ${forecast.windDirection}," +
-                        " ${forecast.windSpeed}km/h")
 
-                Text(text = "Humidity: ${forecast.humidity}%")
+                //precipitation
+                Text(text = "Precipitation chance: ${forecast.day.daily_chance_of_rain}%," +
+                        " ${forecast.day.totalprecip_mm}mm"
+                )
+
+
+                Text(text = "Max wind speed: ${forecast.day.maxwind_kph}km/h")
+
+                Text(text = "Humidity: ${forecast.day.avghumidity}%")
 
                 //Give space
                 Spacer(Modifier.height(50.dp))
             }
+        } else {
+            Text(text = "Weather not found")
         }
     }
 }

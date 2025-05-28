@@ -1,34 +1,48 @@
 package com.example.weatherapp.models
 
-import android.graphics.drawable.Icon
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import com.google.gson.annotations.SerializedName
 
 data class Weather(
+    val location: Location? = null,
     val current: Current,
-    val forecast: List<Forecast>
+    val forecast: Forecast
+)
+
+data class Location(
+    val name: String,
+    val region: String,
+    val country: String,
+    val localtime: String
 )
 
 data class Current(
-    val weatherIcon: Int,
-    val condition: String,
-    val temperature: Int,
-    val precipitationType: String,
-    val precipitationAmount: Double,
-    val windDirection: String,
-    val windSpeed: Double
+    val condition: Condition,
+    val temp_c: Int,
+    val precip_mm: Double,
+    val wind_dir: String,
+    val wind_kph: Double
+)
+
+data class ForecastObject(
+    val date: String,
+    val day: Day
+)
+
+data class Day(
+    val maxtemp_c: Double,
+    val mintemp_c: Double,
+    val condition: Condition,
+    val totalprecip_mm: Double,
+    val maxwind_kph: Double,
+    val daily_chance_of_rain: Int,
+    val avghumidity: Int
 )
 
 data class Forecast(
-    val date: String,
-    val weatherIcon: Int,
-    val maxTemp: Int,
-    val minTemp: Int,
-    val condition: String,
-    val precipitationType: String,
-    val precipitationAmount: Double,
-    val precipitationProbability: Int,
-    val windDirection: String,
-    val windSpeed: Double,
-    val humidity: Int
+    val forecastday: List<ForecastObject>
 )
+
+data class Condition(
+    val text: String,
+    @SerializedName("icon") val icon: String
+    )
