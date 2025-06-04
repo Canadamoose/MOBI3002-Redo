@@ -12,17 +12,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainViewModel : ViewModel() {
-    private val _weather = MutableStateFlow<Weather?>(null)
+    val _weather = MutableStateFlow<Weather?>(null)
     val weather = _weather.asStateFlow()
 
     //Retrofit instance
-    val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://api.weatherapi.com/")
+    private var retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl("https://api.weatherapi.com")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     //Initialize interface
-    val weatherService: WeatherService = retrofit.create(WeatherService::class.java)
+    private var weatherService: WeatherService = retrofit.create(WeatherService::class.java)
 
     init {
         viewModelScope.launch {
