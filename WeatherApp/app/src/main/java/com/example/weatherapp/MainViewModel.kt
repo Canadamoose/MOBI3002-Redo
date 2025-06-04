@@ -12,25 +12,35 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainViewModel : ViewModel() {
-    val _weather = MutableStateFlow<Weather?>(null)
+    var _weather = MutableStateFlow<Weather?>(null)
     val weather = _weather.asStateFlow()
 
+    var locCoords: String = ""
+
     //Retrofit instance
-    private var retrofit: Retrofit = Retrofit.Builder()
+    var retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://api.weatherapi.com")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     //Initialize interface
-    private var weatherService: WeatherService = retrofit.create(WeatherService::class.java)
+    val weatherService: WeatherService = retrofit.create(WeatherService::class.java)
 
-    init {
+    fun getLocCoords(loc: String) {
+        locCoords = loc
+        getWeather()
+    }
+
+    private fun getWeather(){
         viewModelScope.launch {
             try {
                 _weather.value = weatherService.getWeather(
                     key = "3f3eec6216d543e8b72211054252105",
-                    q = "Halifax",
-                    days = 3,
+                    q = locCoords,
+                    //I'll leave it at a whole week however
+                    //with the free tier API it will only
+                    //show 3 days
+                    days = 7,
                     aqi = "no",
                     alerts = "no"
                 )
@@ -38,6 +48,11 @@ class MainViewModel : ViewModel() {
                 Log.e("Weather", "API Error", e)
             }
         }
+    }
+
+    init {
+
+
 
 //        val weather = Weather(
 //            current = Current(
