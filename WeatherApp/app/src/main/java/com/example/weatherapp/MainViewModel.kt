@@ -28,10 +28,10 @@ class MainViewModel : ViewModel() {
 
     fun getLocCoords(loc: String) {
         locCoords = loc
-        getWeather()
+        callWeatherAPI()
     }
 
-    private fun getWeather(){
+    private fun callWeatherAPI(){
         viewModelScope.launch {
             try {
                 _weather.value = weatherService.getWeather(
