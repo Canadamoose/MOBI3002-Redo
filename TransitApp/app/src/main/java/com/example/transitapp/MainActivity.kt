@@ -1,10 +1,12 @@
 package com.example.transitapp
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +58,21 @@ fun DisplayUI(mainViewModel: MainViewModel) {
 
     var selectedIndex by remember { mutableIntStateOf(0) }
 
+    // ask for permissions
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        mainViewModel.onLocationPermissionResult(granted)
+    }
+
+    LaunchedEffect(Unit) {
+        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    // collect value of permission given
+    val hasLocationPermission by mainViewModel.hasLocationPermission.collectAsState()
+
+    // main UI
     Scaffold(
         topBar = {
             TopAppBar(
@@ -105,10 +124,10 @@ fun DisplayUI(mainViewModel: MainViewModel) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = "map") {
-                MapScreen(mainViewModel)
+                MapScreen(mainViewModel, hasLocationPermission)
             }
             composable(route = "other") {
-                Other()
+                Other(mainViewModel)
             }
         }
     }

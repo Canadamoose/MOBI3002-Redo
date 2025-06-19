@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.transit.realtime.GtfsRealtime
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,6 +19,23 @@ class MainViewModel : ViewModel() {
     val gtfs = _gtfs.asStateFlow()
 
     val mapViewportState = MapViewportState()
+
+    private val _hasLocationPermission = MutableStateFlow(false)
+    val hasLocationPermission: StateFlow<Boolean> = _hasLocationPermission
+
+    init {
+        loadBusPositions()
+        viewModelScope.launch {
+            while (true) {
+                delay(15000) // Refresh every 15 seconds
+                loadBusPositions()
+            }
+        }
+    }
+
+    fun onLocationPermissionResult(granted: Boolean) {
+        _hasLocationPermission.value = granted
+    }
 
     fun loadBusPositions() {
         viewModelScope.launch {
