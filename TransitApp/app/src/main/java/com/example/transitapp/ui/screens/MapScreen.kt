@@ -1,7 +1,7 @@
 package com.example.transitapp.ui.screens
 
 
-import android.util.Log
+import com.example.transitapp.R
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +18,7 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.layers.generated.CircleLayer
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
@@ -67,16 +68,15 @@ fun MapScreen(mainViewModel: MainViewModel, hasLocationPermission: Boolean) {
 
         entities?.forEach { entity ->
             entity.vehicle?.position?.let { pos ->
-                CircleAnnotation(
+                val busIcon = rememberIconImage(key = R.drawable.outline_directions_bus_24, painter = painterResource(R.drawable.outline_directions_bus_24))
+
+                PointAnnotation(
                     point = Point.fromLngLat(
                         pos.longitude.toDouble(),
                         pos.latitude.toDouble()
                     )
                 ) {
-                    circleRadius = 8.0
-                    circleColor = Color(0xffee4e8b)  // Pink color
-                    circleStrokeWidth = 2.0
-                    circleStrokeColor = Color(0xffffffff)  // White border
+                   iconImage = busIcon
                 }
             }
         }

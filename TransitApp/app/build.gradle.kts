@@ -40,7 +40,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.navigation:navigation-compose:2.9.0")
     implementation("com.mapbox.maps:android:11.12.2")
     implementation("com.mapbox.extension:maps-compose:11.12.2")

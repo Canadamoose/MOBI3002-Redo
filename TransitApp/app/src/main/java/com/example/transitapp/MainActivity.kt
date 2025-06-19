@@ -105,14 +105,14 @@ fun DisplayUI(mainViewModel: MainViewModel) {
                         contentDescription = "Map Icon") }
                 )
                 NavigationBarItem(
-                    label = { Text("Other") },
+                    label = { Text("Alerts") },
                     onClick = {
                         selectedIndex = 1
-                        navController.navigate("other") },
+                        navController.navigate("alerts") },
                     selected = selectedIndex == 1,
                     icon = { Icon(
                         painter = painterResource(id = R.drawable.outline_android_24),
-                        contentDescription = "Other Temp")}
+                        contentDescription = "Alerts icon")}
                 )
             }
         }
@@ -126,8 +126,8 @@ fun DisplayUI(mainViewModel: MainViewModel) {
             composable(route = "map") {
                 MapScreen(mainViewModel, hasLocationPermission)
             }
-            composable(route = "other") {
-                Other(mainViewModel)
+            composable(route = "alerts") {
+                Alerts(mainViewModel)
             }
         }
     }
